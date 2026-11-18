@@ -195,3 +195,10 @@ class TestCommission(TestCommissionBase):
         )
         # Agent must be in the followers
         self.assertIn(self.agent_monthly, settlement.message_partner_ids)
+
+    def test_get_agent_lines_signature(self):
+        # action_settle calls the hook with (agent, date_to_agent): a settlement
+        # type no module extends gets the hook's NotImplementedError, not a TypeError.
+        wizard = self.make_settle_model.new({"date_to": "2026-01-31"})
+        with self.assertRaises(NotImplementedError):
+            wizard._get_agent_lines(self.agent_monthly, wizard.date_to)
